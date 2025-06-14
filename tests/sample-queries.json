@@ -1,0 +1,17 @@
+{
+  "test_cases": [
+    {
+      "query": "Hello!",
+      "expected_agent": "greeting"
+    },
+    {
+      "query": "What can you do?",
+      "expected_agent": "capabilities"
+    },
+    {
+      "query": "PDF/A",
+      "expected_agent": "rag",
+      "min_answer_length": 50
+    }
+  ]
+}

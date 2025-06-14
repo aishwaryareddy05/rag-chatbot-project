@@ -1,0 +1,123 @@
+{
+  "nodes": [
+    {
+      "parameters": {},
+      "name": "Start",
+      "type": "n8n-nodes-base.start",
+      "typeVersion": 1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ask",
+        "responseMode": "onReceived",
+        "options": {
+          "responseData": {
+            "responseBody": "={{$node[\"Response Formatter\"].json}}",
+            "responseHeaders": {
+              "parameters": [
+                {
+                  "name": "Content-Type",
+                  "value": "application/json"
+                }
+              ]
+            },
+            "responseStatusCode": "200"
+          }
+        }
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [450, 300],
+      "webhookId": "altibbe-chatbot"
+    },
+    {
+      "parameters": {
+        "functionCode": "const question = $input.all()[0].json.question;\nif (!question || question.trim().length === 0) {\n  throw new Error('Please enter a valid question');\n}\nreturn { \n  json: { \n    cleanedQuestion: question.trim().toLowerCase(),\n    originalQuestion: question\n  } \n};"
+      },
+      "name": "Preprocess Question",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const sampleDocs = [\n  {\n    text: \"Altibbe Health develops virtuous AI technology combining ethics and innovation.\",\n    source: \"about\"\n  },\n  {\n    text: \"The evaluation criteria focuses on technical skills (40%), code quality (25%), and communication (15%).\",\n    source: \"hiring\"\n  }\n];\n\nconst results = sampleDocs.filter(doc => \n  doc.text.toLowerCase().includes($input.all()[0].json.cleanedQuestion)\n);\n\nreturn {\n  json: {\n    context: results.map(r => r.text),\n    sources: results.map(r => r.source)\n  }\n};"
+      },
+      "name": "Vector Search",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "const question = $input.all()[0].json.cleanedQuestion;\nconst context = $input.all()[0].json.context;\n\nif (['hello','hi','hey'].some(g => question.includes(g))) {\n  return {\n    json: {\n      response: \"Hello! I'm the Altibbe assistant. How can I help?\",\n      sources: []\n    }\n  };\n}\n\nif (!context || context.length === 0) {\n  return {\n    json: {\n      response: \"I couldn't find information about that.\",\n      sources: []\n    }\n  };\n}\n\nreturn {\n  json: {\n    response: `I found this:\\n\\n${context[0]}\\n\\n(Source: ${$input.all()[0].json.sources[0]})`,\n    sources: $input.all()[0].json.sources\n  }\n};"
+      },
+      "name": "Response Formatter",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [1050, 300]
+    }
+  ],
+  "connections": {
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Preprocess Question",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preprocess Question": {
+      "main": [
+        [
+          {
+            "node": "Vector Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "catch": [
+        [
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vector Search": {
+      "main": [
+        [
+          {
+            "node": "Response Formatter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

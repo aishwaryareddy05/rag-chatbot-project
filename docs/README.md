@@ -80,20 +80,20 @@ flowchart LR
 ## 📂 Project Structure
 
 ```
-altibbe-chatbot/
+rag-chatbot-project/
 ├── workflows/
 │   └── rag-chatbot-workflow.json
 ├── scripts/
 │   ├── setup.py          # DB initialization
 │   └── utils.js          # Helper functions
 ├── docs/
-│   ├── architecture.md   # Technical diagrams
-│   └── ethics.md         # AI guidelines
+│   ├── technical-approch.md   # Technical diagrams
+│   └── Readme.md         # AI guidelines
 ├── data/
-│   ├── documents/        # Sample PDFs/text files
+│   ├── sample-documents/        # Sample PDFs/text files
 │   └── chroma/           # Vector database
 └── tests/
-    └── api_tests.js      # Postman collection
+    └── sample-queries.json    # Postman collection
 ```
 
 ## 🛡️ Ethical Considerations

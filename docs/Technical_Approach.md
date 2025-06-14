@@ -1,13 +1,12 @@
 # Technical Approach: RAG-Powered FAQ Chatbot
-
 ## System Architecture
 ```mermaid
 flowchart TB
-    subgraph User Layer
+    subgraph User_Layer
         A[Web/Mobile App] -->|HTTP POST| B[API Gateway]
     end
 
-    subgraph n8n Layer
+    subgraph n8n_Layer
         B --> C{Webhook Router}
         C --> D[Preprocessing Node]
         D --> E[Agent Dispatcher]
@@ -15,18 +14,19 @@ flowchart TB
         E -->|Complex Query| G[RAG Engine]
     end
 
-    subgraph Data Layer
-        G --> H[(VectorDB\nChroma/Pinecone)]
+    subgraph Data_Layer
+        G --> H["VectorDB\n(Chroma / Pinecone)"]
         H --> I[Document Chunks]
-        G --> J[[LLM Gateway\n(Gemini/OpenAI)]]
+        G --> J["LLM Gateway\n(Gemini / OpenAI)"]
     end
 
-    subgraph Output Layer
+    subgraph Output_Layer
         F --> K[Response Builder]
         G --> K
         K --> L[User Interface]
     end
 ```
+
 
 ## Enhanced RAG Pipeline
 ```mermaid
@@ -79,16 +79,21 @@ stateDiagram-v2
 ```mermaid
 gantt
     title Query Processing Timeline
-    dateFormat  HH:mm:ss.SSS
+    dateFormat  HH:mm
+    axisFormat  %H:%M
+
     section Request
-    HTTP Receiving :00:00.000, 50ms
-    JSON Parsing :00:00.050, 20ms
+    HTTP Receiving       :active, 00:00, 1min
+    JSON Parsing         :after HTTP Receiving, 1min
+
     section Processing
-    Vector Search :00:00.070, 300ms
-    LLM Generation :00:00.370, 700ms
+    Vector Search        :after JSON Parsing, 5min
+    LLM Generation       :after Vector Search, 10min
+
     section Response
-    Formatting :00:01.070, 30ms
-    HTTP Send :00:01.100, 40ms
+    Formatting           :after LLM Generation, 1min
+    HTTP Send            :after Formatting, 1min
+
 ```
 
 ## Error Handling Flow

@@ -1,6 +1,6 @@
 # Altibbe Health RAG-Powered FAQ Chatbot
 
-![Altibbe Chatbot Architecture](docs/images/architecture.png)  
+
 *A virtuous AI assistant for healthcare technology*
 
 ## 🚀 Features
@@ -127,11 +127,4 @@ All responses are:
 4. Push to branch (`git push origin feature`)
 5. Open Pull Request
 
-## 📜 License
-
-This project is licensed under the **Altibbe Virtuous Technology License** - see [LICENSE.md](LICENSE.md) for details.
-
 ---
-
-**Need Help?**  
-Contact: [people@altibbe.com](mailto:people@altibbe.com) | Phone: +1 (986) 613-3639
